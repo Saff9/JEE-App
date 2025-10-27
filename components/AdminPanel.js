@@ -49,12 +49,22 @@ export default function AdminPanel() {
     alert('Video added successfully!');
   };
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file && file.type === 'application/pdf') {
+      setFormData({...formData, notes: file});
+    } else {
+      alert('Please select a PDF file');
+    }
+  };
+
   return (
     <>
       {/* Floating Admin Button */}
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-8 right-8 bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 transition-colors z-50"
+        className="fixed bottom-8 right-8 bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 transition-colors z-50 flex items-center justify-center"
+        aria-label="Add new lecture"
       >
         <Plus className="h-6 w-6" />
       </button>
@@ -67,7 +77,8 @@ export default function AdminPanel() {
               <h2 className="text-xl font-semibold">Add New Lecture</h2>
               <button
                 onClick={() => setIsOpen(false)}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+                aria-label="Close modal"
               >
                 <X className="h-6 w-6" />
               </button>
@@ -76,28 +87,28 @@ export default function AdminPanel() {
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Lecture Title
+                  Lecture Title *
                 </label>
                 <input
                   type="text"
                   required
                   value={formData.title}
                   onChange={(e) => setFormData({...formData, title: e.target.value})}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                   placeholder="Enter lecture title"
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  YouTube URL
+                  YouTube URL *
                 </label>
                 <input
                   type="url"
                   required
                   value={formData.youtubeUrl}
                   onChange={(e) => setFormData({...formData, youtubeUrl: e.target.value})}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                   placeholder="https://www.youtube.com/watch?v=..."
                 />
               </div>
@@ -105,12 +116,12 @@ export default function AdminPanel() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Subject
+                    Subject *
                   </label>
                   <select
                     value={formData.subject}
                     onChange={(e) => setFormData({...formData, subject: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                   >
                     <option value="physics">Physics</option>
                     <option value="chemistry">Chemistry</option>
@@ -126,7 +137,7 @@ export default function AdminPanel() {
                     type="text"
                     value={formData.duration}
                     onChange={(e) => setFormData({...formData, duration: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                     placeholder="e.g., 45:30"
                   />
                 </div>
@@ -134,14 +145,14 @@ export default function AdminPanel() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Chapter
+                  Chapter *
                 </label>
                 <input
                   type="text"
                   required
                   value={formData.chapter}
                   onChange={(e) => setFormData({...formData, chapter: e.target.value})}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                   placeholder="Enter chapter name"
                 />
               </div>
@@ -151,11 +162,11 @@ export default function AdminPanel() {
                   Lecture Notes (PDF)
                 </label>
                 <div className="flex items-center justify-center w-full">
-                  <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
+                  <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors">
                     <div className="flex flex-col items-center justify-center pt-5 pb-6">
                       <Upload className="h-8 w-8 text-gray-400 mb-2" />
                       <p className="text-sm text-gray-500">
-                        <span className="font-semibold">Click to upload</span> or drag and drop
+                        <span className="font-semibold">Click to upload</span>
                       </p>
                       <p className="text-xs text-gray-400">PDF files only</p>
                     </div>
@@ -163,7 +174,7 @@ export default function AdminPanel() {
                       type="file"
                       className="hidden"
                       accept=".pdf"
-                      onChange={(e) => setFormData({...formData, notes: e.target.files[0]})}
+                      onChange={handleFileChange}
                     />
                   </label>
                 </div>

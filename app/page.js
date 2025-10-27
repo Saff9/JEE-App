@@ -1,7 +1,7 @@
 // app/page.js
 'use client';
 import { useState, useEffect } from 'react';
-import { Play, BookOpen, Download, Search, Menu, User, Bell } from 'lucide-react';
+import { Play, BookOpen, Download, Search, User, Bell } from 'lucide-react';
 import AdminPanel from '../components/AdminPanel';
 
 export default function Home() {
@@ -10,7 +10,6 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState('physics');
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Sample data - Replace with Firebase/Firestore in production
   const sampleVideos = {
     physics: [
       {
@@ -62,7 +61,6 @@ export default function Home() {
 
   useEffect(() => {
     setVideos(sampleVideos[activeTab]);
-    // Set first video as selected by default
     if (sampleVideos[activeTab].length > 0 && !selectedVideo) {
       setSelectedVideo(sampleVideos[activeTab][0]);
     }
@@ -80,7 +78,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
@@ -131,7 +128,6 @@ export default function Home() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Video List */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-lg shadow-sm border">
               <div className="p-4 border-b">
@@ -188,11 +184,9 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Video Player & Content */}
           <div className="lg:col-span-3">
             {selectedVideo ? (
               <div className="bg-white rounded-lg shadow-sm border">
-                {/* Video Player */}
                 <div className="bg-black rounded-t-lg">
                   <div className="aspect-w-16 aspect-h-9">
                     <iframe
@@ -205,7 +199,6 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Video Info */}
                 <div className="p-6">
                   <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-4">
                     <div className="flex-1">
@@ -239,7 +232,6 @@ export default function Home() {
                     </div>
                   </div>
 
-                  {/* Additional Resources */}
                   <div className="mt-6 pt-6 border-t">
                     <h3 className="text-lg font-semibold text-gray-900 mb-4">
                       Study Materials
@@ -272,7 +264,6 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Admin Panel */}
       <AdminPanel />
     </div>
   );

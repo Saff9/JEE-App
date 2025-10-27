@@ -29,14 +29,12 @@ export default function AdminPanel() {
       return;
     }
 
-    // Here you would typically send this to your backend/Firebase
     console.log('Adding video:', {
       ...formData,
       youtubeId,
       notes: formData.notes ? URL.createObjectURL(formData.notes) : null
     });
 
-    // Reset form and close modal
     setFormData({
       title: '',
       youtubeUrl: '',
@@ -60,16 +58,13 @@ export default function AdminPanel() {
 
   return (
     <>
-      {/* Floating Admin Button */}
       <button
         onClick={() => setIsOpen(true)}
         className="fixed bottom-8 right-8 bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 transition-colors z-50 flex items-center justify-center"
-        aria-label="Add new lecture"
       >
         <Plus className="h-6 w-6" />
       </button>
 
-      {/* Admin Modal */}
       {isOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
@@ -78,7 +73,6 @@ export default function AdminPanel() {
               <button
                 onClick={() => setIsOpen(false)}
                 className="text-gray-400 hover:text-gray-600 transition-colors"
-                aria-label="Close modal"
               >
                 <X className="h-6 w-6" />
               </button>

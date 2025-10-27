@@ -2,6 +2,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { Play, BookOpen, Download, Search, Menu, User, Bell } from 'lucide-react';
+import AdminPanel from '../components/AdminPanel';
 
 export default function Home() {
   const [videos, setVideos] = useState([]);
@@ -61,12 +62,21 @@ export default function Home() {
 
   useEffect(() => {
     setVideos(sampleVideos[activeTab]);
+    // Set first video as selected by default
+    if (sampleVideos[activeTab].length > 0 && !selectedVideo) {
+      setSelectedVideo(sampleVideos[activeTab][0]);
+    }
   }, [activeTab]);
 
   const filteredVideos = videos.filter(video =>
     video.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     video.chapter.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    setSelectedVideo(sampleVideos[tab][0] || null);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -81,27 +91,19 @@ export default function Home() {
               </div>
               
               <nav className="hidden md:ml-8 md:flex space-x-8">
-                <button className={`px-3 py-2 rounded-md text-sm font-medium ${
-                  activeTab === 'physics' 
-                    ? 'text-blue-600 bg-blue-50' 
-                    : 'text-gray-500 hover:text-gray-700'
-                }`}>
-                  Physics
-                </button>
-                <button className={`px-3 py-2 rounded-md text-sm font-medium ${
-                  activeTab === 'chemistry' 
-                    ? 'text-blue-600 bg-blue-50' 
-                    : 'text-gray-500 hover:text-gray-700'
-                }`}>
-                  Chemistry
-                </button>
-                <button className={`px-3 py-2 rounded-md text-sm font-medium ${
-                  activeTab === 'mathematics' 
-                    ? 'text-blue-600 bg-blue-50' 
-                    : 'text-gray-500 hover:text-gray-700'
-                }`}>
-                  Mathematics
-                </button>
+                {['physics', 'chemistry', 'mathematics'].map((tab) => (
+                  <button
+                    key={tab}
+                    onClick={() => handleTabChange(tab)}
+                    className={`px-3 py-2 rounded-md text-sm font-medium capitalize ${
+                      activeTab === tab 
+                        ? 'text-blue-600 bg-blue-50' 
+                        : 'text-gray-500 hover:text-gray-700'
+                    }`}
+                  >
+                    {tab}
+                  </button>
+                ))}
               </nav>
             </div>
 
@@ -111,7 +113,7 @@ export default function Home() {
                 <input
                   type="text"
                   placeholder="Search lectures..."
-                  className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-64"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -137,43 +139,51 @@ export default function Home() {
                 <p className="text-sm text-gray-500">JEE Main & Advanced 2024</p>
               </div>
               
-              <div className="p-4 space-y-4">
-                {filteredVideos.map((video) => (
-                  <div
-                    key={video.id}
-                    className={`p-4 rounded-lg border cursor-pointer transition-all duration-200 ${
-                      selectedVideo?.id === video.id
-                        ? 'border-blue-500 bg-blue-50'
-                        : 'border-gray-200 hover:border-blue-300'
-                    }`}
-                    onClick={() => setSelectedVideo(video)}
-                  >
-                    <div className="flex items-start space-x-3">
-                      <div className="flex-shrink-0 w-4 h-4 mt-1">
-                        <Play className="h-4 w-4 text-blue-600" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h3 className="text-sm font-medium text-gray-900 line-clamp-2">
-                          {video.title}
-                        </h3>
-                        <p className="text-xs text-gray-500 mt-1">
-                          {video.chapter} • {video.duration}
-                        </p>
-                        <div className="flex items-center justify-between mt-2">
-                          <span className="text-xs text-blue-600 font-medium">
-                            {video.teacher}
-                          </span>
-                          {video.notes && (
-                            <button className="text-xs text-green-600 hover:text-green-700 flex items-center">
-                              <Download className="h-3 w-3 mr-1" />
-                              Notes
-                            </button>
-                          )}
+              <div className="max-h-[600px] overflow-y-auto">
+                <div className="p-4 space-y-4">
+                  {filteredVideos.map((video) => (
+                    <div
+                      key={video.id}
+                      className={`p-4 rounded-lg border cursor-pointer transition-all duration-200 ${
+                        selectedVideo?.id === video.id
+                          ? 'border-blue-500 bg-blue-50'
+                          : 'border-gray-200 hover:border-blue-300'
+                      }`}
+                      onClick={() => setSelectedVideo(video)}
+                    >
+                      <div className="flex items-start space-x-3">
+                        <div className="flex-shrink-0 w-4 h-4 mt-1">
+                          <Play className="h-4 w-4 text-blue-600" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="text-sm font-medium text-gray-900 line-clamp-2">
+                            {video.title}
+                          </h3>
+                          <p className="text-xs text-gray-500 mt-1">
+                            {video.chapter} • {video.duration}
+                          </p>
+                          <div className="flex items-center justify-between mt-2">
+                            <span className="text-xs text-blue-600 font-medium">
+                              {video.teacher}
+                            </span>
+                            {video.notes && (
+                              <button 
+                                className="text-xs text-green-600 hover:text-green-700 flex items-center"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  window.open(video.notes, '_blank');
+                                }}
+                              >
+                                <Download className="h-3 w-3 mr-1" />
+                                Notes
+                              </button>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
           </div>
@@ -183,38 +193,46 @@ export default function Home() {
             {selectedVideo ? (
               <div className="bg-white rounded-lg shadow-sm border">
                 {/* Video Player */}
-                <div className="aspect-w-16 aspect-h-9 bg-black rounded-t-lg">
-                  <iframe
-                    src={`https://www.youtube.com/embed/${selectedVideo.youtubeId}`}
-                    className="w-full h-96 rounded-t-lg"
-                    allowFullScreen
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  />
+                <div className="bg-black rounded-t-lg">
+                  <div className="aspect-w-16 aspect-h-9">
+                    <iframe
+                      src={`https://www.youtube.com/embed/${selectedVideo.youtubeId}?rel=0`}
+                      className="w-full h-96 rounded-t-lg"
+                      allowFullScreen
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      title={selectedVideo.title}
+                    />
+                  </div>
                 </div>
 
                 {/* Video Info */}
                 <div className="p-6">
-                  <div className="flex justify-between items-start">
-                    <div>
+                  <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-4">
+                    <div className="flex-1">
                       <h1 className="text-2xl font-bold text-gray-900">
                         {selectedVideo.title}
                       </h1>
-                      <div className="flex items-center space-x-4 mt-2">
-                        <span className="text-sm text-gray-500">{selectedVideo.subject}</span>
+                      <div className="flex flex-wrap items-center gap-2 mt-2">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                          {selectedVideo.subject}
+                        </span>
                         <span className="text-sm text-gray-500">•</span>
                         <span className="text-sm text-gray-500">{selectedVideo.chapter}</span>
                         <span className="text-sm text-gray-500">•</span>
                         <span className="text-sm text-blue-600 font-medium">{selectedVideo.teacher}</span>
                       </div>
                     </div>
-                    <div className="flex space-x-2">
+                    <div className="flex flex-col sm:flex-row gap-2">
                       {selectedVideo.notes && (
-                        <button className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                        <button 
+                          className="flex items-center justify-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                          onClick={() => window.open(selectedVideo.notes, '_blank')}
+                        >
                           <Download className="h-4 w-4 mr-2" />
                           Download Notes
                         </button>
                       )}
-                      <button className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                      <button className="flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
                         <BookOpen className="h-4 w-4 mr-2" />
                         Practice Questions
                       </button>
@@ -227,11 +245,11 @@ export default function Home() {
                       Study Materials
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="p-4 border border-gray-200 rounded-lg hover:border-blue-300 transition-colors">
+                      <div className="p-4 border border-gray-200 rounded-lg hover:border-blue-300 transition-colors cursor-pointer">
                         <h4 className="font-medium text-gray-900">Quick Revision Notes</h4>
                         <p className="text-sm text-gray-500 mt-1">Key formulas and concepts</p>
                       </div>
-                      <div className="p-4 border border-gray-200 rounded-lg hover:border-blue-300 transition-colors">
+                      <div className="p-4 border border-gray-200 rounded-lg hover:border-blue-300 transition-colors cursor-pointer">
                         <h4 className="font-medium text-gray-900">Practice Problems</h4>
                         <p className="text-sm text-gray-500 mt-1">Chapter-wise questions</p>
                       </div>
@@ -253,6 +271,9 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      {/* Admin Panel */}
+      <AdminPanel />
     </div>
   );
 }

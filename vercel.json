@@ -1,4 +1,3 @@
-// vercel.json
 {
   "version": 2,
   "builds": [
@@ -6,5 +5,10 @@
       "src": "package.json",
       "use": "@vercel/next"
     }
-  ]
+  ],
+  "functions": {
+    "app/**/*.js": {
+      "maxDuration": 30
+    }
+  }
 }

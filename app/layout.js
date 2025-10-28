@@ -2,16 +2,14 @@
 import './globals.css';
 
 export const metadata = {
-  title: 'JEE Prep Pro - Study App',
-  description: 'Comprehensive JEE preparation platform with video lectures and study materials',
+  title: 'JEE Prep Pro',
+  description: 'JEE Study App',
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body>
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
